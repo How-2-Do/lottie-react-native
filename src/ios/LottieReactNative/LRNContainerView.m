@@ -65,14 +65,18 @@ typedef void (^AnimationProgressTime)(CGFloat);
 
 - (void)setSourceJson:(NSString *)jsonString {
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                         options:kNilOptions
-                                                           error:nil];
-    [self replaceAnimationView:[AnimationView animationFromJSON:json]];
+    Animation *animation = [Animation json:jsonData];
+    AnimationView *animationView = [[AnimationView alloc] initWithAnimation:animation];
+    [self replaceAnimationView:animationView];
 }
 
 - (void)setSourceName:(NSString *)name {
-    [self replaceAnimationView:[AnimationView animationNamed:name]];
+    Animation *animation = [Animation named:name
+                                     bundle:NSBundle.mainBundle
+                               subdirectory:nil
+                             animationCache:nil];
+    AnimationView *animationView = [[AnimationView alloc] initWithAnimation:animation];
+    [self replaceAnimationView:animationView];
 }
 
 - (void)play {
@@ -95,9 +99,10 @@ typedef void (^AnimationProgressTime)(CGFloat);
               toFrame:(NSNumber *)endFrame
        withCompletion:(nullable LottieCompletionBlock)completion {
     if (_animationView != nil) {
-
-        [_animationView playFromFrame:startFrame
-                              toFrame:endFrame withCompletion:completion];
+        [_animationView playWithStartingFrame:startFrame.floatValue
+                                      toFrame:endFrame.floatValue
+                                     isLooped:_loop
+                                   completion:completion];
     }
 }
 
