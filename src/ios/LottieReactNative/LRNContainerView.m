@@ -32,7 +32,7 @@
 - (void)setProgress:(CGFloat)progress {
   _progress = progress;
   if (_animationView != nil) {
-    _animationView.animationProgress = _progress;
+    _animationView.currentProgress = _progress;
   }
 }
 
