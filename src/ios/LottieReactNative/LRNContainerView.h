@@ -16,7 +16,9 @@
 #import "React/RCTView.h"
 #endif
 
-#import <Lottie/Lottie.h>
+#import <Lottie/Lottie-Swift.h>
+
+typedef void (^LOTAnimationCompletionBlock)(BOOL animationFinished);
 
 @interface LRNContainerView : RCTView
 

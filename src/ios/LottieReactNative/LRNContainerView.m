@@ -18,7 +18,7 @@
 #endif
 
 @implementation LRNContainerView {
-  LOTAnimationView *_animationView;
+  AnimationView *_animationView;
 }
 
 - (void)reactSetFrame:(CGRect)frame
