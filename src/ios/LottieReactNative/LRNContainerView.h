@@ -18,7 +18,7 @@
 
 #import <Lottie/Lottie-Swift.h>
 
-typedef void (^LOTAnimationCompletionBlock)(BOOL animationFinished);
+typedef void (^LottieCompletionBlock)(BOOL animationFinished);
 
 @interface LRNContainerView : RCTView
 
@@ -30,10 +30,10 @@ typedef void (^LOTAnimationCompletionBlock)(BOOL animationFinished);
 @property (nonatomic, copy) RCTBubblingEventBlock onAnimationFinish;
 
 - (void)play;
-- (void)play:(nullable LOTAnimationCompletionBlock)completion;
+- (void)play:(nullable LottieCompletionBlock)completion;
 - (void)playFromFrame:(NSNumber *)startFrame
               toFrame:(NSNumber *)endFrame
-       withCompletion:(nullable LOTAnimationCompletionBlock)completion;
+       withCompletion:(nullable LottieCompletionBlock)completion;
 - (void)reset;
 
 @end

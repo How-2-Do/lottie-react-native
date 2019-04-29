@@ -17,112 +17,116 @@
 #import "React/UIView+React.h"
 #endif
 
+typedef void (^AnimationFrameTime)(CGFloat);
+typedef void (^AnimationProgressTime)(CGFloat);
+
 @implementation LRNContainerView {
-  AnimationView *_animationView;
+    AnimationView *_animationView;
 }
 
 - (void)reactSetFrame:(CGRect)frame
 {
-  [super reactSetFrame:frame];
-  if (_animationView != nil) {
-    [_animationView reactSetFrame:frame];
-  }
+    [super reactSetFrame:frame];
+    if (_animationView != nil) {
+        [_animationView reactSetFrame:frame];
+    }
 }
 
 - (void)setProgress:(CGFloat)progress {
-  _progress = progress;
-  if (_animationView != nil) {
-    _animationView.currentProgress = _progress;
-  }
+    _progress = progress;
+    if (_animationView != nil) {
+        _animationView.currentProgress = _progress;
+    }
 }
 
 - (void)setSpeed:(CGFloat)speed {
-  _speed = speed;
-  if (_animationView != nil) {
-    _animationView.animationSpeed = _speed;
-  }
+    _speed = speed;
+    if (_animationView != nil) {
+        _animationView.animationSpeed = _speed;
+    }
 }
 
 - (void)setLoop:(BOOL)loop {
-  _loop = loop;
-  if (_animationView != nil) {
-    _animationView.loopMode = _loop ? LottieLoopModeLoop : LottieLoopModePlayOnce
-  }
+    _loop = loop;
+    if (_animationView != nil) {
+        _animationView.loopMode = _loop ? LottieLoopModeLoop : LottieLoopModePlayOnce;
+    }
 }
 
 - (void)setResizeMode:(NSString *)resizeMode {
-  if ([resizeMode isEqualToString:@"cover"]) {
-    [_animationView setContentMode:UIViewContentModeScaleAspectFill];
-  } else if ([resizeMode isEqualToString:@"contain"]) {
-    [_animationView setContentMode:UIViewContentModeScaleAspectFit];
-  } else if ([resizeMode isEqualToString:@"center"]) {
-    [_animationView setContentMode:UIViewContentModeCenter];
-  }
+    if ([resizeMode isEqualToString:@"cover"]) {
+        [_animationView setContentMode:UIViewContentModeScaleAspectFill];
+    } else if ([resizeMode isEqualToString:@"contain"]) {
+        [_animationView setContentMode:UIViewContentModeScaleAspectFit];
+    } else if ([resizeMode isEqualToString:@"center"]) {
+        [_animationView setContentMode:UIViewContentModeCenter];
+    }
 }
 
 - (void)setSourceJson:(NSString *)jsonString {
-  NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-  NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                       options:kNilOptions
-                                                         error:nil];
-  [self replaceAnimationView:[LOTAnimationView animationFromJSON:json]];
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                         options:kNilOptions
+                                                           error:nil];
+    [self replaceAnimationView:[AnimationView animationFromJSON:json]];
 }
 
 - (void)setSourceName:(NSString *)name {
-  [self replaceAnimationView:[LOTAnimationView animationNamed:name]];
+    [self replaceAnimationView:[AnimationView animationNamed:name]];
 }
 
 - (void)play {
-  if (_animationView != nil) {
-    [_animationView play];
-  }
+    if (_animationView != nil) {
+        [_animationView playWithCompletion:nil];
+    }
 }
 
-- (void)play:(nullable LOTAnimationCompletionBlock)completion {
-  if (_animationView != nil) {
-    if (completion != nil) {
-      [_animationView playWithCompletion:completion];
-    } else {
-      [_animationView play];
+- (void)play:(nullable LottieCompletionBlock)completion {
+    if (_animationView != nil) {
+        if (completion != nil) {
+            [_animationView playWithCompletion:completion];
+        } else {
+            [_animationView playWithCompletion:nil];
+        }
     }
-  }
 }
 
 - (void)playFromFrame:(NSNumber *)startFrame
               toFrame:(NSNumber *)endFrame
-       withCompletion:(nullable LOTAnimationCompletionBlock)completion {
-  if (_animationView != nil) {
-    [_animationView playFromFrame:startFrame
-                          toFrame:endFrame withCompletion:completion];
-  }
+       withCompletion:(nullable LottieCompletionBlock)completion {
+    if (_animationView != nil) {
+
+        [_animationView playFromFrame:startFrame
+                              toFrame:endFrame withCompletion:completion];
+    }
 }
 
 - (void)reset {
-  if (_animationView != nil) {
-    _animationView.animationProgress = 0;
-    [_animationView pause];
-  }
+    if (_animationView != nil) {
+        _animationView.currentProgress = 0;
+        [_animationView pause];
+    }
 }
 
 # pragma mark Private
 
-- (void)replaceAnimationView:(LOTAnimationView *)next {
-  UIViewContentMode contentMode = UIViewContentModeScaleAspectFit;
-  if (_animationView != nil) {
-    contentMode = _animationView.contentMode;
-    [_animationView removeFromSuperview];
-  }
-  _animationView = next;
-  [self addSubview: next];
-  [_animationView reactSetFrame:self.frame];
-  [_animationView setContentMode:contentMode];
-  [self applyProperties];
+- (void)replaceAnimationView:(AnimationView *)next {
+    UIViewContentMode contentMode = UIViewContentModeScaleAspectFit;
+    if (_animationView != nil) {
+        contentMode = _animationView.contentMode;
+        [_animationView removeFromSuperview];
+    }
+    _animationView = next;
+    [self addSubview: next];
+    [_animationView reactSetFrame:self.frame];
+    [_animationView setContentMode:contentMode];
+    [self applyProperties];
 }
 
 - (void)applyProperties {
-  _animationView.animationProgress = _progress;
-  _animationView.animationSpeed = _speed;
-  _animationView.loopAnimation = _loop;
+    _animationView.currentProgress = _progress;
+    _animationView.animationSpeed = _speed;
+    _animationView.loopMode = _loop ? LottieLoopModeLoop : LottieLoopModePlayOnce;
 }
 
 @end
