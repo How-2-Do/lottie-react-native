@@ -46,7 +46,7 @@
 - (void)setLoop:(BOOL)loop {
   _loop = loop;
   if (_animationView != nil) {
-    _animationView.loopAnimation = _loop;
+    _animationView.loopMode = _loop ? LottieLoopModeLoop : LottieLoopModePlayOnce
   }
 }
 
